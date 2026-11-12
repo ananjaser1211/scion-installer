@@ -42,8 +42,10 @@ set -euo pipefail
 # --open build on Ubuntu 24.04 with Mesa built on top (the fresh-build workflow), and a full build from an IPSW on macOS.
 # Its devices/manifest.conf pins the device repositories (scion-starlte, scion-star2lte, scion-crownlte); tools/hakios-device.py
 # sync checks them out there.
-KERNEL_REPO=https://github.com/Scion-Project/scion-kernel.git
-KERNEL_REV=13c4fce84d7cb8e3ab4d9b4df45ad71bfd75987b
+# This fork builds the Galaxy S9+ (star2lte) port from its own kernel fork, which pins its own xnu and scion-star2lte
+# (profiles/ios-16.5.conf, devices/manifest.conf): a checkout at this revision builds on Linux with nothing patched in.
+KERNEL_REPO=https://github.com/ananjaser1211/scion-kernel.git
+KERNEL_REV=a63a42499b539131f13b4013496481e3b736a946
 
 # The one IPSW the build is made for (sysimage/unpack.sh and select-system.py know only this one). These are facts
 # about Apple's file, published with it; the file itself is never fetched here.
@@ -348,7 +350,8 @@ run() { # LOG CMD...: the command's output to its log; its tail on failure
 if [ "$OPEN" = 0 ]; then
 	step "Unpacking your IPSW (sysimage/unpack.sh; a few minutes the first time)"
 	# unpack.sh finds 7z by that name
-	if [ "$SEVENZ" = 7zz ] && ! have 7z; then mkdir -p "$WORK/bin" && ln -sf "$(command -v 7zz)" "$WORK/bin/7z" && export PATH="$WORK/bin:$PATH"; fi
+	# the chosen 7zz goes ahead of any `7z` on PATH: Debian ships p7zip 16 as 7z, which cannot read the IPSW's APFS image
+	if [ "$SEVENZ" = 7zz ]; then mkdir -p "$WORK/bin" && ln -sf "$(command -v 7zz)" "$WORK/bin/7z" && export PATH="$WORK/bin:$PATH"; fi
 	# (a second run finds what it unpacked before and does not read the IPSW again for it)
 	run unpack.log sysimage/unpack.sh "$IPSW"
 	tail -2 "$LOGS/unpack.log" | sed 's/^/  /'
