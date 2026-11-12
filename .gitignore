@@ -6,3 +6,7 @@ out/
 scion-build/
 __pycache__/
 *.pyc
+
+# a downloaded 7-Zip (build-installer.sh), and the IPSW: neither is ours to keep here
+/.tools/
+*.ipsw
