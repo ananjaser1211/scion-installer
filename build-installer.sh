@@ -45,7 +45,7 @@ set -euo pipefail
 # This fork builds the Galaxy S9+ (star2lte) port from its own kernel fork, which pins its own xnu and scion-star2lte
 # (profiles/ios-16.5.conf, devices/manifest.conf): a checkout at this revision builds on Linux with nothing patched in.
 KERNEL_REPO=https://github.com/ananjaser1211/scion-kernel.git
-KERNEL_REV=cde185bf3b1aa8ab6a3011a06e8ff9a002b31cf0
+KERNEL_REV=f22bf8ec5f78c1d0706baf55d353c0ff35a7ffee
 
 # The one IPSW the build is made for (sysimage/unpack.sh and select-system.py know only this one). These are facts
 # about Apple's file, published with it; the file itself is never fetched here.
